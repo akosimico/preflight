@@ -1,5 +1,6 @@
 from database.database import Database
 from database.repositories import EndpointsRepository, LoadMetricsRepository, ProjectsRepository, ScenariosRepository, SecurityFindingsRepository, SettingsRepository, TestResultsRepository, TestRunsRepository
+from core.projects import ProjectService
 
 def test_database_initializes_all_planned_tables(tmp_path):
     db=Database(tmp_path/"storage"/"preflight.db"); db.initialize()
@@ -15,3 +16,12 @@ def test_repositories_crud_and_cascades(tmp_path):
 def test_settings_persist_typed_values(tmp_path):
     settings=SettingsRepository(Database(tmp_path/"preflight.db")); settings.set("active_project_id",3); settings.set("enabled_suites",["api","load"])
     assert settings.get("active_project_id")==3 and settings.get("enabled_suites")==["api","load"] and settings.get("unknown","fallback")=="fallback"
+
+def test_project_service_validates_and_persists_active_project(tmp_path):
+    db=Database(tmp_path/"preflight.db"); service=ProjectService(ProjectsRepository(db),SettingsRepository(db))
+    project=service.create("Demo","http://localhost:3000","https://api.example.test","Staging")
+    assert service.active()["id"]==project["id"]
+    try: service.create("","not-a-url","","Local")
+    except ValueError as error: assert "required" in str(error)
+    else: raise AssertionError("invalid project accepted")
+    assert service.delete(project["id"]) and service.active() is None

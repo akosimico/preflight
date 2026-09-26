@@ -5,7 +5,11 @@ from __future__ import annotations
 import customtkinter as ctk
 
 from gui.dashboard import DashboardView
+from gui.projects_view import ProjectsView
 from gui.sidebar import NAVIGATION_ITEMS, Sidebar
+from database.database import Database
+from database.repositories import ProjectsRepository, SettingsRepository
+from core.projects import ProjectService
 
 
 class PlaceholderView(ctk.CTkFrame):
@@ -28,8 +32,11 @@ class PreflightApp(ctk.CTk):
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
+        self.project_service = ProjectService(ProjectsRepository(Database()), SettingsRepository(Database()))
         self.sidebar = Sidebar(self, self.show_view)
         self.sidebar.grid(row=0, column=0, sticky="nsew")
+        active_project = self.project_service.active()
+        self.sidebar.set_project_name(active_project["name"] if active_project else None)
         self.content = ctk.CTkFrame(self, corner_radius=0, fg_color=("#FFFFFF", "#101820"))
         self.content.grid(row=0, column=1, sticky="nsew")
         self.content.grid_rowconfigure(0, weight=1)
@@ -41,7 +48,7 @@ class PreflightApp(ctk.CTk):
 
     def _build_views(self) -> None:
         for name in NAVIGATION_ITEMS:
-            view = DashboardView(self.content) if name == "Dashboard" else PlaceholderView(self.content, name)
+            view = DashboardView(self.content) if name == "Dashboard" else ProjectsView(self.content, self.project_service, self.sidebar.set_project_name) if name == "Projects" else PlaceholderView(self.content, name)
             view.grid(row=0, column=0, sticky="nsew")
             self.views[name] = view
 
@@ -51,4 +58,3 @@ class PreflightApp(ctk.CTk):
         self.views[view_name].tkraise()
         self.current_view = view_name
         self.sidebar.set_active(view_name)
-

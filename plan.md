@@ -1171,13 +1171,13 @@ Milestone 2 — Database
 Milestone 2 done when: projects and settings can be written to and read back from SQLite reliably.
 
 Milestone 3 — Project Management
- Build Create Project form (name, frontend URL, API URL, environment)
- Wire form to projects repository (create)
- Build Projects list view
- Build Edit Project flow
- Build Delete Project flow (with confirmation)
- Persist and restore "currently selected project" across sessions
- Validate required fields and URL formatting
+ [x] Build Create Project form (name, frontend URL, API URL, environment)
+ [x] Wire form to projects repository (create)
+ [x] Build Projects list view
+ [x] Build Edit Project flow
+ [x] Build Delete Project flow (with confirmation)
+ [x] Persist and restore "currently selected project" across sessions
+ [x] Validate required fields and URL formatting
 Milestone 3 done when: a developer can create, edit, delete, and switch between projects, and the active project is always visible.
 
 Milestone 4 — Connection Testing
