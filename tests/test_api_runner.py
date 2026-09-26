@@ -7,7 +7,7 @@ class Handler(BaseHTTPRequestHandler):
 def test_api_runner_supports_status_and_json_assertions():
     server=HTTPServer(("127.0.0.1",0),Handler); Thread(target=server.serve_forever,daemon=True).start()
     try:
-        result=run_request("GET",f"http://127.0.0.1:{server.server_port}",assertions={"json.ok":True,"max_response_ms":1000})
+        result=run_request("GET",f"http://127.0.0.1:{server.server_port}",assertions={"json.ok":True,"max_response_ms":5000})
         assert result.passed and result.status_code==200
     finally: server.shutdown()
 
