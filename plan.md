@@ -1162,12 +1162,12 @@ Milestone 1 — Application Shell
 Milestone 1 done when: the app opens, all nav items switch views, and the shell renders with no logic wired up yet.
 
 Milestone 2 — Database
- Design SQLite schema (projects, endpoints, scenarios, test_runs, test_results, load_metrics, security_findings)
- Implement database.py (connection, migrations/init)
- Implement repositories.py (CRUD per table)
- Implement settings persistence (app-level config, e.g. config/default.json)
- Write unit tests for repositories
- Verify DB file is created under storage/preflight.db on first run
+ [x] Design SQLite schema (projects, endpoints, scenarios, test_runs, test_results, load_metrics, security_findings)
+ [x] Implement database.py (connection, migrations/init)
+ [x] Implement repositories.py (CRUD per table)
+ [x] Implement settings persistence (app-level config, e.g. config/default.json)
+ [x] Write unit tests for repositories
+ [x] Verify DB file is created under storage/preflight.db on first run
 Milestone 2 done when: projects and settings can be written to and read back from SQLite reliably.
 
 Milestone 3 — Project Management
