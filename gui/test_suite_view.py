@@ -5,10 +5,12 @@ from core.projects import ProjectService
 from database.repositories import EndpointsRepository,TestResultsRepository,TestRunsRepository
 from runners.api_runner import run_request
 from runners.api_runner import expected_success_status,redact
+from core.test_manager import TestManager,TestState
+from gui.components.log_console import LogConsole
 class TestSuiteView(ctk.CTkFrame):
     def __init__(self,master,projects:ProjectService,endpoints:EndpointsRepository,runs:TestRunsRepository,results:TestResultsRepository):
-        super().__init__(master,fg_color="transparent");self.projects=projects;self.endpoints=endpoints;self.runs=runs;self.results=results
-        ctk.CTkLabel(self,text="API Test Suite",font=ctk.CTkFont(size=30,weight="bold")).pack(anchor="w",padx=28,pady=(30,6));self.status=ctk.CTkLabel(self,text="Run enabled discovered endpoints.");self.status.pack(anchor="w",padx=28,pady=(0,14));ctk.CTkButton(self,text="RUN API TESTS",command=self.run).pack(anchor="w",padx=28,pady=(0,10)); manual=ctk.CTkFrame(self);manual.pack(fill="x",padx=28,pady=(0,10));self.manual_method=ctk.CTkOptionMenu(manual,values=["GET","POST","PUT","PATCH","DELETE"],width=90);self.manual_method.pack(side="left",padx=8,pady=8);self.manual_path=ctk.CTkEntry(manual,placeholder_text="Manual path, e.g. /health");self.manual_path.pack(side="left",fill="x",expand=True,padx=4,pady=8);ctk.CTkButton(manual,text="RUN MANUAL",command=self.run_manual).pack(side="left",padx=8,pady=8); self.rows=ctk.CTkScrollableFrame(self,label_text="Results");self.rows.pack(fill="both",expand=True,padx=28,pady=(0,28))
+        super().__init__(master,fg_color="transparent");self.projects=projects;self.endpoints=endpoints;self.runs=runs;self.results=results;self.manager=TestManager()
+        ctk.CTkLabel(self,text="API Test Suite",font=ctk.CTkFont(size=30,weight="bold")).pack(anchor="w",padx=28,pady=(30,6));self.status=ctk.CTkLabel(self,text="Run enabled discovered endpoints.");self.status.pack(anchor="w",padx=28,pady=(0,14));controls=ctk.CTkFrame(self,fg_color="transparent");controls.pack(anchor="w",padx=28,pady=(0,10));ctk.CTkButton(controls,text="RUN API TESTS",command=self.run).pack(side="left",padx=(0,6));ctk.CTkButton(controls,text="STOP",fg_color="#B34141",command=self.manager.cancel).pack(side="left"); manual=ctk.CTkFrame(self);manual.pack(fill="x",padx=28,pady=(0,10));self.manual_method=ctk.CTkOptionMenu(manual,values=["GET","POST","PUT","PATCH","DELETE"],width=90);self.manual_method.pack(side="left",padx=8,pady=8);self.manual_path=ctk.CTkEntry(manual,placeholder_text="Manual path, e.g. /health");self.manual_path.pack(side="left",fill="x",expand=True,padx=4,pady=8);ctk.CTkButton(manual,text="RUN MANUAL",command=self.run_manual).pack(side="left",padx=8,pady=8); self.rows=ctk.CTkScrollableFrame(self,label_text="Results");self.rows.pack(fill="both",expand=True,padx=28,pady=(0,10));self.console=LogConsole(self);self.console.pack(fill="x",padx=28,pady=(0,20));self.after(150,self.poll_events)
     def run(self):
         project=self.projects.active()
         if not project or not project["api_url"]:self.status.configure(text="Select a project with an API URL first.");return
@@ -34,3 +36,7 @@ class TestSuiteView(ctk.CTkFrame):
         def worker():
             run=self.runs.create(project["id"],status="RUNNING"); result=run_request(self.manual_method.get(),project["api_url"].rstrip("/")+path); status="PASSED" if result.passed else "FAILED";self.results.create(run["id"],name,status,duration_ms=result.duration_ms,details_json={"error":result.error,"response":redact(result.response_text)});self.runs.update(run["id"],status="COMPLETED",summary_json={"passed":int(result.passed),"total":1});self.after(0,lambda:(self.clear_rows(),self.add_row(name,status,result.duration_ms,result.error),self.status.configure(text=f"{name}: {status}")))
         Thread(target=worker,daemon=True).start()
+    def poll_events(self):
+        for event in self.manager.poll():
+            if event.kind=="log": self.console.write(event.payload["message"])
+        self.after(150,self.poll_events)
