@@ -13,9 +13,10 @@ NAVIGATION_ITEMS = (
     "Discovery",
     "Test Suite",
     "Scenarios",
+    "Security",
     "Reports",
     "History",
-    "Settings",
+    "Deployment Gates",
 )
 
 
@@ -59,4 +60,3 @@ class Sidebar(ctk.CTkFrame):
 
     def set_project_name(self, name: str | None) -> None:
         self.project_label.configure(text=name or "No project selected")
-
