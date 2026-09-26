@@ -6,7 +6,7 @@ from collections.abc import Callable
 from core.events import Event
 class TestState(StrEnum):
     __test__=False
-    IDLE="IDLE"; CONNECTING="CONNECTING"; DISCOVERING="DISCOVERING"; RUNNING_API="RUNNING_API"; RUNNING_LOAD="RUNNING_LOAD"; EVALUATING="EVALUATING"; COMPLETED="COMPLETED"; FAILED="FAILED"; CANCELLED="CANCELLED"
+    IDLE="IDLE"; CONNECTING="CONNECTING"; DISCOVERING="DISCOVERING"; RUNNING_API="RUNNING_API"; RUNNING_LOAD="RUNNING_LOAD"; RUNNING_SECURITY="RUNNING_SECURITY"; EVALUATING="EVALUATING"; COMPLETED="COMPLETED"; FAILED="FAILED"; CANCELLED="CANCELLED"
 class TestManager:
     __test__=False
     def __init__(self): self.state=TestState.IDLE;self.events:Queue[Event]=Queue();self._cancel=StopEvent();self._thread:Thread|None=None

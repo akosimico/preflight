@@ -133,6 +133,7 @@ class PreflightApp(ctk.CTk):
                                     self.project_service,
                                     self.runs_repository,
                                     self.metrics_repository,
+                                    self.endpoints_repository,
                                 )
                                 if name == "Scenarios"
                                 else (
@@ -141,6 +142,7 @@ class PreflightApp(ctk.CTk):
                                         self.project_service,
                                         self.runs_repository,
                                         self.findings_repository,
+                                        self.endpoints_repository,
                                     )
                                     if name == "Security"
                                     else (
@@ -149,6 +151,7 @@ class PreflightApp(ctk.CTk):
                                             self.project_service,
                                             self.runs_repository,
                                             self.project_service.settings,
+                                            self.metrics_repository,
                                         )
                                         if name == "Deployment Gates"
                                         else (
@@ -156,6 +159,9 @@ class PreflightApp(ctk.CTk):
                                                 self.content,
                                                 self.project_service,
                                                 self.runs_repository,
+                                                self.results_repository,
+                                                self.metrics_repository,
+                                                self.findings_repository,
                                             )
                                             if name == "History"
                                             else (
@@ -165,6 +171,7 @@ class PreflightApp(ctk.CTk):
                                                     self.runs_repository,
                                                     self.results_repository,
                                                     self.metrics_repository,
+                                                    self.findings_repository,
                                                 )
                                                 if name == "Reports"
                                                 else PlaceholderView(self.content, name)

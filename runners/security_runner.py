@@ -33,8 +33,17 @@ def inspect_headers(url: str, timeout: float = 10) -> tuple[int | None, list[Sec
     for header, (severity, title, detail) in RECOMMENDED_HEADERS.items():
         if header not in headers:
             findings.append(SecurityFinding(severity, title, detail))
-    if headers.get("access-control-allow-origin") == "*":
-        findings.append(SecurityFinding("MEDIUM", "CORS allows every origin", "Review whether any website should be allowed to call this API."))
+    origin = headers.get("access-control-allow-origin")
+    credentials = headers.get("access-control-allow-credentials", "").lower() == "true"
+    if origin == "*":
+        severity = "HIGH" if credentials else "MEDIUM"
+        findings.append(SecurityFinding(severity, "CORS allows every origin", "Review whether any website should be allowed to call this API."))
+    for cookie in response.headers.get_list("set-cookie"):
+        lowered=cookie.lower(); missing=[]
+        if "secure" not in lowered: missing.append("Secure")
+        if "httponly" not in lowered: missing.append("HttpOnly")
+        if "samesite" not in lowered: missing.append("SameSite")
+        if missing: findings.append(SecurityFinding("MEDIUM", "Cookie is missing security flags", f"A response cookie is missing: {', '.join(missing)}."))
     if "server" in headers:
         findings.append(SecurityFinding("INFO", "Server technology header is exposed", f"The response includes Server: {headers['server']}."))
     return response.status_code, findings
