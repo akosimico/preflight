@@ -6,9 +6,10 @@ import customtkinter as ctk
 
 from gui.dashboard import DashboardView
 from gui.projects_view import ProjectsView
+from gui.discovery_view import DiscoveryView
 from gui.sidebar import NAVIGATION_ITEMS, Sidebar
 from database.database import Database
-from database.repositories import ProjectsRepository, SettingsRepository
+from database.repositories import EndpointsRepository, ProjectsRepository, SettingsRepository
 from core.projects import ProjectService
 
 
@@ -32,7 +33,9 @@ class PreflightApp(ctk.CTk):
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
-        self.project_service = ProjectService(ProjectsRepository(Database()), SettingsRepository(Database()))
+        database=Database()
+        self.project_service = ProjectService(ProjectsRepository(database), SettingsRepository(database))
+        self.endpoints_repository = EndpointsRepository(database)
         self.sidebar = Sidebar(self, self.show_view)
         self.sidebar.grid(row=0, column=0, sticky="nsew")
         active_project = self.project_service.active()
@@ -48,7 +51,7 @@ class PreflightApp(ctk.CTk):
 
     def _build_views(self) -> None:
         for name in NAVIGATION_ITEMS:
-            view = DashboardView(self.content) if name == "Dashboard" else ProjectsView(self.content, self.project_service, self.sidebar.set_project_name) if name == "Projects" else PlaceholderView(self.content, name)
+            view = DashboardView(self.content) if name == "Dashboard" else ProjectsView(self.content, self.project_service, self.sidebar.set_project_name) if name == "Projects" else DiscoveryView(self.content,self.project_service,self.endpoints_repository) if name == "Discovery" else PlaceholderView(self.content, name)
             view.grid(row=0, column=0, sticky="nsew")
             self.views[name] = view
 

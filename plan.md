@@ -1197,14 +1197,14 @@ TEST CONNECTION
 works reliably for both frontend and API targets, for both success and failure cases.
 
 Milestone 5 — OpenAPI Discovery
- Implement /openapi.json detection (discovery/openapi.py)
- Parse OpenAPI specification (paths, methods, parameters, request bodies, response schemas, auth requirements, tags)
- Build Discovery Engine orchestration (core/discovery.py)
- Build API Discovery view listing all discovered endpoints
- Implement per-endpoint enable/disable checkboxes
- Implement Select All / Deselect All
- Flag destructive methods (DELETE, PUT, PATCH) visually
- Persist selected/enabled endpoints to the endpoints table
+ [x] Implement /openapi.json detection (discovery/openapi.py)
+ [x] Parse OpenAPI specification (paths, methods, parameters, request bodies, response schemas, auth requirements, tags)
+ [x] Build Discovery Engine orchestration (core/discovery.py)
+ [x] Build API Discovery view listing all discovered endpoints
+ [x] Implement per-endpoint enable/disable checkboxes
+ [x] Implement Select All / Deselect All
+ [x] Flag destructive methods (DELETE, PUT, PATCH) visually
+ [x] Persist selected/enabled endpoints to the endpoints table
 Milestone 5 done when:
 
 http://localhost:8000
