@@ -7,9 +7,10 @@ import customtkinter as ctk
 from gui.dashboard import DashboardView
 from gui.projects_view import ProjectsView
 from gui.discovery_view import DiscoveryView
+from gui.test_suite_view import TestSuiteView
 from gui.sidebar import NAVIGATION_ITEMS, Sidebar
 from database.database import Database
-from database.repositories import EndpointsRepository, ProjectsRepository, SettingsRepository
+from database.repositories import EndpointsRepository, ProjectsRepository, SettingsRepository,TestResultsRepository,TestRunsRepository
 from core.projects import ProjectService
 
 
@@ -36,6 +37,7 @@ class PreflightApp(ctk.CTk):
         database=Database()
         self.project_service = ProjectService(ProjectsRepository(database), SettingsRepository(database))
         self.endpoints_repository = EndpointsRepository(database)
+        self.runs_repository=TestRunsRepository(database); self.results_repository=TestResultsRepository(database)
         self.sidebar = Sidebar(self, self.show_view)
         self.sidebar.grid(row=0, column=0, sticky="nsew")
         active_project = self.project_service.active()
@@ -51,7 +53,7 @@ class PreflightApp(ctk.CTk):
 
     def _build_views(self) -> None:
         for name in NAVIGATION_ITEMS:
-            view = DashboardView(self.content) if name == "Dashboard" else ProjectsView(self.content, self.project_service, self.sidebar.set_project_name) if name == "Projects" else DiscoveryView(self.content,self.project_service,self.endpoints_repository) if name == "Discovery" else PlaceholderView(self.content, name)
+            view = DashboardView(self.content) if name == "Dashboard" else ProjectsView(self.content, self.project_service, self.sidebar.set_project_name) if name == "Projects" else DiscoveryView(self.content,self.project_service,self.endpoints_repository) if name == "Discovery" else TestSuiteView(self.content,self.project_service,self.endpoints_repository,self.runs_repository,self.results_repository) if name == "Test Suite" else PlaceholderView(self.content, name)
             view.grid(row=0, column=0, sticky="nsew")
             self.views[name] = view
 

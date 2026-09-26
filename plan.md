@@ -1215,13 +1215,13 @@ http://localhost:8000
 appears correctly in the Discovery view and selections persist.
 
 Milestone 6 — API Testing
- Build HTTPX-based API Runner (runners/api_runner.py)
- Support GET, POST, PUT, PATCH, DELETE
- Implement assertions: status code, response time, JSON property exists, JSON property equals, response contains text, header exists/value
- Build manual "Add API Test" form
- Build API Test Results view (pass/fail list, timing, averages)
- Build failed-test detail view (request, headers, body, response, failed assertion) with secret redaction
- Persist results to test_results
+ [x] Build HTTPX-based API Runner (runners/api_runner.py)
+ [x] Support GET, POST, PUT, PATCH, DELETE
+ [x] Implement assertions: status code, response time, JSON property exists, JSON property equals, response contains text, header exists/value
+ [x] Build manual "Add API Test" form
+ [x] Build API Test Results view (pass/fail list, timing, averages)
+ [x] Build failed-test detail view (request, headers, body, response, failed assertion) with secret redaction
+ [x] Persist results to test_results
 Milestone 6 done when: both discovered and manually-defined API tests run against a live target and produce a pass/fail report with timings.
 
 Milestone 7 — Test Manager
