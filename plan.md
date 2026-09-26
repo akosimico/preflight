@@ -1181,12 +1181,12 @@ Milestone 3 — Project Management
 Milestone 3 done when: a developer can create, edit, delete, and switch between projects, and the active project is always visible.
 
 Milestone 4 — Connection Testing
- Implement frontend reachability check (HTTP GET, capture status + timing)
- Implement API reachability check (HTTP GET, capture status + timing)
+ [x] Implement frontend reachability check (HTTP GET, capture status + timing)
+ [x] Implement API reachability check (HTTP GET, capture status + timing)
  Build "Test Connection" UI (loading state → ✓/✗ result)
- Display HTTP status and response time per target
- Build failure state with actionable guidance (backend not running, wrong port, wrong URL, firewall/network)
- Run connection checks off the main thread
+ [x] Display HTTP status and response time per target
+ [x] Build failure state with actionable guidance (backend not running, wrong port, wrong URL, firewall/network)
+ [x] Run connection checks off the main thread
 Milestone 4 done when:
 
 URL
